@@ -1,0 +1,90 @@
+---
+title: "Syn_bot tilescan Analysis" 
+subtitle: "Report" 
+author: "Gabi Sejourne"
+date: "01/14/2024"
+format: pdf
+editor: visual 
+execute: 
+  echo: true 
+---
+
+```{r}
+#| label: packages_and_data
+library(tidyverse)
+library(ggplot2)
+library(viridis)
+synapse_counts = read_csv("p42_tilescan/Synapse_Counts_Normalized_Pixel_Based_Unblinded.csv", show_col_types = FALSE)
+vglut1_counts = read_csv("p42_tilescan/VGluT1_Counts_Normalized_Pixel_Based_Unblinded.csv", show_col_types = FALSE)
+psd95_counts = read_csv("p42_tilescan/PSD95_Counts_Normalized_Pixel_Based_Unblinded.csv", show_col_types = FALSE)
+
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+```
+
+```{r}
+#| label: synapse_counts
+
+p_synapse <- ggplot(data = synapse_counts, aes(x =synapse_counts$"Normalized distance from pia (%)", y = synapse_counts$"Synapse Counts", color = Genotype)
+    ) +
+  stat_smooth(
+    method = "loess", span = 0.1, se = TRUE, alpha = 0.3, aes(fill = Genotype)
+    ) +
+  labs(
+    y = "VGluT1/GEPH Colocs",
+    x = "Normalized distance from pia (%)",
+    title = "P42 Synapse Counts in V1"
+  ) +
+  #scale_color_manual(values = cbPalette[4:5]) +
+  #scale_fill_manual(values = cbPalette[4:5])
+  scale_colour_viridis_d() + scale_fill_viridis_d()
+
+png(filename = "plots/p42_Synapse_Counts_tilescan_Normalized.png", width = 1500, height = 700, res = 300)
+  p_synapse
+  dev.off()
+  
+p_synapse
+```
+
+```{r}
+#| label: synapse_counts
+
+p_vglut1 <- ggplot(data = vglut1_counts, aes(x =vglut1_counts$"Normalized distance from pia (%)", y = vglut1_counts$"VGluT1 Counts", color = Genotype)
+    ) +
+  stat_smooth(
+    method = "loess", span = 0.1, se = TRUE, alpha = 0.3, aes(fill = Genotype)
+    ) +
+  labs(
+    y = "VGluT1 Puncta",
+    x = "Normalized distance from pia (%)",
+    title = "P42 VGluT1 Counts in V1"
+  )
+p_vglut1 <- p_vglut1 + scale_colour_viridis_d() + scale_fill_viridis_d()
+
+png(filename = "plots/p42_vglut1_Counts_tilescan_Normalized.png", width = 1500, height = 700, res = 300)
+  p_vglut1
+  dev.off()
+  
+p_vglut1
+```
+
+```{r}
+
+p_psd95 <- ggplot(data = psd95_counts, aes(x =psd95_counts$"Normalized distance from pia (%)", y = psd95_counts$"PSD95 Counts", color = Genotype)
+    ) +
+  stat_smooth(
+    method = "loess", span = 0.1, se = TRUE, alpha = 0.3, aes(fill = Genotype)
+    ) +
+  labs(
+    y = "PSD95 Puncta",
+    x = "Normalized distance from pia (%)",
+    title = "P42 PSD95 Counts in V1"
+  )
+p_psd95 <- p_psd95 + scale_colour_viridis_d() + scale_fill_viridis_d()
+
+png(filename = "plots/p42_psd95_Counts_tilescan_Normalized.png", width = 1500, height = 700, res = 300)
+  p_psd95
+  dev.off()
+  
+p_psd95
+```
